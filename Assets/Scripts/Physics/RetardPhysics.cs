@@ -1,3 +1,9 @@
+/// <summary>
+/// Retard physics.
+/// This entire class is sulphurous poison. Abandon all hope, etc...
+/// More importantly, get rid of it.
+/// </summary>
+
 using UnityEngine;
 using System.Collections;
 
@@ -137,7 +143,7 @@ public class RetardPhysics : MonoBehaviour
 				if(m_collider.bounds.center.y < other.bounds.max.y && m_collider.bounds.center.y > other.bounds.min.y)
 				{
 					
-					if(other.bounds.center.x > m_collider.bounds.max.y && m_velocity.x > 0.0f)
+					if(other.bounds.center.x > m_collider.bounds.max.x && m_velocity.x > 0.0f)
 					{
 						m_velocity.x = 0.0f;	
 					}
@@ -146,7 +152,7 @@ public class RetardPhysics : MonoBehaviour
 				if(m_collider.bounds.center.y < other.bounds.max.y && m_collider.bounds.center.y > other.bounds.min.y)
 				{
 					
-					if(other.bounds.center.x > m_collider.bounds.max.y && m_velocity.x > 0.0f)
+					if(other.bounds.center.x < m_collider.bounds.max.x && m_velocity.x < 0.0f)
 					{
 						m_velocity.x = 0.0f;	
 					}
