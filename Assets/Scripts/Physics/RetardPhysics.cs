@@ -72,12 +72,53 @@ public class RetardPhysics : MonoBehaviour
 	{
 		if(other.gameObject.tag == "Geometry")
 		{
-			Debug.Log("Collided");
+			
+			
+			
 			if(other.bounds.center.y < m_collider.bounds.center.y)
 			{
 				m_state = PhysicsState.Grounded;
-				m_groundTriggersHit++;
 				m_velocity.y = 0.0f;
+				
+				float y = other.bounds.max.y + m_collider.bounds.extents.y;
+				
+				transform.position = new Vector3(transform.position.x, y, transform.position.z);
+			}
+			else
+			{
+				if(m_collider.bounds.center.y < other.bounds.max.y && m_collider.bounds.center.y > other.bounds.min.y)
+				{
+					
+					if(other.bounds.center.x > m_collider.bounds.max.y && m_velocity.x > 0.0f)
+					{
+						m_velocity.x = 0.0f;	
+					}
+				}	
+			}
+			
+			if(other.bounds.min.y > m_collider.bounds.center.y)
+			{
+					m_velocity.y = 0.0f;
+			}
+				
+			// Find the position of the geometry relative to the physics object, then halt progress in that direction
+		}
+		
+		if(other.gameObject.tag == "Bounds")
+		{
+			Debug.Log("Bounds hit");
+			transform.position = new Vector3(0.0f, 10.0f, 0.0f);	
+		}
+	}
+	
+	void OnTriggerStay(Collider other)
+	{
+		if(other.gameObject.tag == "Geometry")
+		{
+			
+			if(other.bounds.center.y < m_collider.bounds.center.y)
+			{
+				m_state = PhysicsState.Grounded;
 				
 				float y = other.bounds.max.y + m_collider.bounds.extents.y;
 				
@@ -92,16 +133,27 @@ public class RetardPhysics : MonoBehaviour
 						m_velocity.y = 0.0f;
 					}
 				}
+				
+				if(m_collider.bounds.center.y < other.bounds.max.y && m_collider.bounds.center.y > other.bounds.min.y)
+				{
+					
+					if(other.bounds.center.x > m_collider.bounds.max.y && m_velocity.x > 0.0f)
+					{
+						m_velocity.x = 0.0f;	
+					}
+				}
+				
+				if(m_collider.bounds.center.y < other.bounds.max.y && m_collider.bounds.center.y > other.bounds.min.y)
+				{
+					
+					if(other.bounds.center.x > m_collider.bounds.max.y && m_velocity.x > 0.0f)
+					{
+						m_velocity.x = 0.0f;	
+					}
+				}
 			}
 			
 			
-				
-			// Find the position of the geometry relative to the physics object, then halt progress in that direction
-		}
-		
-		if(other.gameObject.tag == "Bounds")
-		{
-			transform.position = new Vector3(0.0f, 0.0f, 0.0f);	
 		}
 	}
 	
@@ -111,11 +163,7 @@ public class RetardPhysics : MonoBehaviour
 		{
 			if(other.gameObject.transform.position.y < transform.position.y)
 			{
-				m_groundTriggersHit--;
-				if(m_groundTriggersHit == 0)
-				{
 					m_state = PhysicsState.Falling;		
-				}
 				
 			}
 		}
