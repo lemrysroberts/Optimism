@@ -87,16 +87,6 @@ public class ActorController : MonoBehaviour
 				m_xRayOrigins [rayIndex] = new Vector3( position.x, startPosY + m_collider.bounds.min.y + ((float)rayIndex * yRaySeparation) - position.y, 0.0f);
 				m_yRayOrigins [rayIndex] = new Vector3( startPosX + m_collider.bounds.min.x - position.x + ((float)rayIndex * xRaySeparation), position.y, 0.0f);
 			}
-			
-			foreach (Vector3 vec in m_xRayOrigins) 
-			{
-				Debug.Log ("Created Left collision vectors: " + vec.x + ", " + vec.y + ", " + vec.z);
-			}
-			
-			foreach (Vector3 vec in m_yRayOrigins) 
-			{
-				Debug.Log ("Created Up collision vectors: " + vec.x + ", " + vec.y + ", " + vec.z);
-			}
 		} 
 		else 
 		{
@@ -260,7 +250,6 @@ public class ActorController : MonoBehaviour
 	{
 		if(other.tag == "Climbable")
 		{
-			Debug.Log("Climbable entered");	
 			m_state = ActorControllerState.OnClimbable;
 		}
 	}
