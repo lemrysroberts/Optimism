@@ -19,13 +19,14 @@ public class KeyMove : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () 
 	{
-		if(Input.GetKey(KeyCode.UpArrow))
+		if(Input.GetKey(KeyCode.UpArrow) && m_controller.State == ActorControllerState.OnClimbable)
 		{
-			//transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + (0.01f * MoveSpeed));
+			m_controller.AddVelocity(new Vector3(0.0f, MoveSpeed, 0.0f));
 		}
 		
-		if(Input.GetKey(KeyCode.DownArrow))
+		if(Input.GetKey(KeyCode.DownArrow) && m_controller.State == ActorControllerState.OnClimbable)
 		{
+			m_controller.AddVelocity(new Vector3(0.0f, -MoveSpeed, 0.0f));
 			//transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - (0.01f * MoveSpeed));
 		}
 		

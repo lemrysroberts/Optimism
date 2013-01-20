@@ -23,7 +23,8 @@ using System.Collections;
 public enum ActorControllerState
 {
 	Grounded,
-	InAir
+	InAir,
+	OnClimbable
 }
 
 public enum ActorControllerWallState
@@ -111,7 +112,10 @@ public class ActorController : MonoBehaviour
 	void FixedUpdate ()
 	{
 		// Splat some gravity on there
-		m_velocity.y -= gravity;
+		if(m_state != ActorControllerState.OnClimbable)
+		{
+			m_velocity.y -= gravity;
+		}
 		
 			
 		Vector3 delta = m_velocity;
@@ -161,6 +165,11 @@ public class ActorController : MonoBehaviour
 		
 		transform.position = newPosition;
 		m_velocity.x = 0.0f;
+		
+		if(m_state == ActorControllerState.OnClimbable)
+		{
+			m_velocity.y = 0.0f;	
+		}
 	}
 	
 	private bool CollideX(ref Vector3 position, Vector3 directionVec)
@@ -220,7 +229,7 @@ public class ActorController : MonoBehaviour
 		{
 			m_state = ActorControllerState.Grounded;	
 		}
-		else
+		else if(m_state != ActorControllerState.OnClimbable)
 		{
 			m_state = ActorControllerState.InAir;	
 		}
@@ -244,6 +253,32 @@ public class ActorController : MonoBehaviour
 		}
 		
 	}
+	
+	#region Triggers
+	
+	public void OnTriggerEnter(Collider other)
+	{
+		if(other.tag == "Climbable")
+		{
+			Debug.Log("Climbable entered");	
+			m_state = ActorControllerState.OnClimbable;
+		}
+	}
+	
+	public void OnTriggerStay(Collider other)
+	{
+		if(other.tag == "Climbable")
+		{
+			m_state = ActorControllerState.OnClimbable;
+		}
+	}
+	
+	public void OnTriggerExit(Collider other)
+	{
+		m_state = ActorControllerState.InAir;
+	}
+	
+	#endregion
 	
 	#region GUI
 	
