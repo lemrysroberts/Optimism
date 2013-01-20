@@ -41,7 +41,7 @@ public class KeyMove : MonoBehaviour {
 			//transform.position = new Vector3(transform.position.x + (0.01f * MoveSpeed), transform.position.y, transform.position.z);
 		}
 		
-		if(Input.GetKey(KeyCode.Space))
+		if(Input.GetKey(KeyCode.Space) && m_controller.State == ActorControllerState.Grounded)
 		{
 			m_controller.AddVelocity(new Vector3(0.0f, JumpPower, 0.0f));
 		}
