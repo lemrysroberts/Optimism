@@ -5,13 +5,13 @@ public class DoorSensor : MonoBehaviour
 {
 	public string TriggerTag = "Player";
 	
-	private Door m_door;
+	private AgentDoor m_door;
 	private int m_detectedEntities = 0;
 	
 	// Use this for initialization
 	void Start () 
 	{
-		m_door = transform.parent.gameObject.GetComponent<Door>();
+		m_door = transform.parent.gameObject.GetComponent<AgentDoor>();
 	}
 	
 	// Update is called once per frame
@@ -27,6 +27,7 @@ public class DoorSensor : MonoBehaviour
 		{
 			m_detectedEntities++;
 			m_door.OpenDoor();
+			Debug.Log("Opening door");
 		}
 	}
 	
@@ -39,6 +40,7 @@ public class DoorSensor : MonoBehaviour
 			Debug.Log("Entity count: " + m_detectedEntities);
 			if(m_detectedEntities == 0)
 			{
+				Debug.Log("Closing door");
 				m_door.CloseDoor();	
 			}
 		}

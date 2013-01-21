@@ -1,49 +1,47 @@
 using UnityEngine;
 using System.Collections;
 
-public class Door : MonoBehaviour {
-	
-	
-	
-	// Use this for initialization
-	void Start () 
+public class Door : WorldObject 
+{
+	public enum DoorState
 	{
-	
+		Open,
+		Closed
 	}
 	
-	// Update is called once per frame
-	void Update () 
+	public DoorState State 
 	{
-	
+		get; set;	
 	}
 	
-	
-	
-	public void OpenDoor()
+	Door()
 	{
-		Debug.Log("Opening door..");
-		Transform panelTransform = transform.FindChild("DoorPanel");
+		State = DoorState.Closed;	
+	}
+	
+	void Update()
+	{
+		if(State == DoorState.Open)
+			(m_viewObject as AgentDoor).OpenDoor();
+		else if(State == DoorState.Closed)
+			(m_viewObject as AgentDoor).CloseDoor();
+	}
+	
+    void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) 
+	{
+		int state = 0;
+        if (stream.isWriting) {
+            state = (int)State;
+            stream.Serialize(ref state);
+        } else {
+            stream.Serialize(ref state);
+            State = (DoorState)state;
+        }
+    }
+	
+	void OnDrawGizmos()
+	{
 		
-		if(panelTransform != null)
-		{
-			Vector3 newPosition = panelTransform.position;
-			newPosition.y += 0.8f;
-			
-			panelTransform.position = newPosition;
-		}
-	}
-	
-	public void CloseDoor()
-	{
-		Debug.Log("Closing door..");
-		Transform panelTransform = transform.FindChild("DoorPanel");
-		
-		if(panelTransform != null)
-		{
-			Vector3 newPosition = panelTransform.position;
-			newPosition.y -= 0.8f;
-			
-			panelTransform.position = newPosition;
-		}
+		Gizmos.DrawWireCube(transform.position, new Vector3(2.0f, 1.0f, 0.0f));
 	}
 }
