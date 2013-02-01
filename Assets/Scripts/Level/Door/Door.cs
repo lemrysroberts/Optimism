@@ -21,6 +21,7 @@ public class Door : WorldObject
 	
 	void Update()
 	{
+		//TODO: This is all guff for the admin-view
 		if(State == DoorState.Open)
 			(m_viewObject as AgentDoor).OpenDoor();
 		else if(State == DoorState.Closed)
@@ -42,6 +43,8 @@ public class Door : WorldObject
 	void OnDrawGizmos()
 	{
 		
-		Gizmos.DrawWireCube(transform.position, new Vector3(2.0f, 1.0f, 0.0f));
+		
+		Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation, transform.localScale);
+		Gizmos.DrawWireCube(Vector3.zero, new Vector3(2.0f, 1.0f, 0.0f));
 	}
 }

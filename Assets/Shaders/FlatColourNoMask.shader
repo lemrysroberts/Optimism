@@ -1,4 +1,4 @@
-Shader "Custom/FlatColour" 
+Shader "Custom/FlatColourNoMask" 
 {
 	Properties 
 	{
@@ -11,6 +11,11 @@ Shader "Custom/FlatColour"
 	    Pass 
 	    {
 		//	Blend DstAlpha DstAlpha
+		
+			ColorMask RGB
+			
+			Tags {"Queue" = "Geometry" }
+		
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag

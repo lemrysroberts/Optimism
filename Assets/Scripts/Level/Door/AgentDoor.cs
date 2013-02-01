@@ -17,7 +17,7 @@ public class AgentDoor : WorldViewObject
 		if(m_door.State != Door.DoorState.Open)
 		{
 			Vector3 newTransform = m_planeChild.transform.position;
-			newTransform.y += 1.0f;
+			newTransform += m_planeChild.transform.TransformDirection(Vector3.up);
 			m_planeChild.transform.position = newTransform;
 		}
 		
@@ -29,7 +29,7 @@ public class AgentDoor : WorldViewObject
 		if(m_door.State == Door.DoorState.Open)
 		{
 			Vector3 newTransform = m_planeChild.transform.position;
-			newTransform.y -= 1.0f;
+			newTransform -= m_planeChild.transform.TransformDirection(Vector3.up);
 			m_planeChild.transform.position = newTransform;
 		}
 		m_door.State = Door.DoorState.Closed;

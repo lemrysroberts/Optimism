@@ -43,6 +43,12 @@ public abstract class WorldObject : MonoBehaviour
 		
 		m_gameObject.transform.parent 	= transform;
 		m_gameObject.transform.position = transform.position;
+		m_gameObject.transform.rotation = transform.rotation;
+	}
+	
+	protected virtual void OnStart()
+	{
+		
 	}
 	
 	public GameObject m_agentViewPrefab;

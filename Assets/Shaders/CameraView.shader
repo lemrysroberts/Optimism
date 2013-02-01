@@ -1,20 +1,24 @@
-Shader "Custom/FlatColour" 
+Shader "Custom/CameraView" 
 {
 	Properties 
 	{
-	    _Color ("Main Color", Color) = (1,1,1,0.5)
+	    _Color ("Main Color", Color) = (1,1,0,1.0)
 	
 	}
 	
 	SubShader 
 	{
+		Tags {"Queue" = "Transparent" }
 	    Pass 
-	    {
-		//	Blend DstAlpha DstAlpha
+	    { 
+	    	
+	    	ZWrite Off
+	    //ColorMask RGBA
+	    //BlendOp Min
+			Blend OneMinusDstAlpha  DstAlpha
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			
 			#include "UnityCG.cginc"
 			
 			float4 _Color;
@@ -22,6 +26,7 @@ Shader "Custom/FlatColour"
 			
 			struct v2f {
 			    float4  pos : SV_POSITION;
+			    float2 uv_MainTex : TEXCOORD0;
 			};
 			
 			v2f vert (appdata_base v)
@@ -33,9 +38,10 @@ Shader "Custom/FlatColour"
 			
 			half4 frag (v2f i) : COLOR
 			{
-			    
+			    half4 color = _Color;
 			    return _Color;
 			}
+		
 			ENDCG
 	
 	    }

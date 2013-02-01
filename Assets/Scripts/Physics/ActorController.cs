@@ -20,13 +20,6 @@
 using UnityEngine;
 using System.Collections;
 
-public enum ActorControllerState
-{
-	Grounded,
-	InAir,
-	OnClimbable
-}
-
 public enum ActorControllerWallState
 {
 	None,
@@ -39,26 +32,12 @@ public class ActorController : MonoBehaviour
 {
 	public int rayCount 			= 3;
 	public float speed 				= 1.0f;
-	public float gravity 			= 0.002f;
 	public LayerMask collisionLayer = 0;
 	
 	private Vector3 m_velocity = new Vector3 (0.0f, 0.0f, 0.0f);
 	private Vector3[] m_xRayOrigins;
 	private Vector3[] m_yRayOrigins;
 	private BoxCollider m_collider;
-	private ActorControllerState m_state = ActorControllerState.Grounded;
-	private ActorControllerWallState m_wallState = ActorControllerWallState.None;
-	
-	// I'm abusing properties to make these values visible to other classes, but not the inspector
-	public ActorControllerState State
-	{
-		get { return m_state; }	
-	}
-	
-	public ActorControllerWallState WallState
-	{
-		get { return m_wallState; }	
-	}
 	
 	void OnEnable ()
 	{
@@ -101,12 +80,6 @@ public class ActorController : MonoBehaviour
 	
 	void FixedUpdate ()
 	{
-		// Splat some gravity on there
-		if(m_state != ActorControllerState.OnClimbable)
-		{
-			m_velocity.y -= gravity;
-		}
-		
 			
 		Vector3 delta = m_velocity;
 		delta.x *= speed;
@@ -151,15 +124,10 @@ public class ActorController : MonoBehaviour
 			xCollided = CollideX (ref newPosition, xDirectionVec);
 		}
 		
-		UpdateStates(delta, xCollided, yCollided);
 		
 		transform.position = newPosition;
 		m_velocity.x = 0.0f;
-		
-		if(m_state == ActorControllerState.OnClimbable)
-		{
-			m_velocity.y = 0.0f;	
-		}
+		m_velocity.y = 0.0f;
 	}
 	
 	private bool CollideX(ref Vector3 position, Vector3 directionVec)
@@ -212,59 +180,19 @@ public class ActorController : MonoBehaviour
 		return collided;
 	}
 	
-	private void UpdateStates(Vector3 delta, bool collidedX, bool collidedY)
-	{
-		// 
-		if(delta.y <= 0.0f && collidedY)
-		{
-			m_state = ActorControllerState.Grounded;	
-		}
-		else if(m_state != ActorControllerState.OnClimbable)
-		{
-			m_state = ActorControllerState.InAir;	
-		}
-		
-		if(delta.x < 0.0f && collidedX)
-		{
-			m_wallState = ActorControllerWallState.Left;	
-		}
-		else if(delta.x < 0.0f)
-		{
-			m_wallState = ActorControllerWallState.None;
-		}
-		
-		if(delta.x > 0.0f && collidedX)
-		{
-			m_wallState = ActorControllerWallState.Right;	
-		}
-		else
-		{
-				
-		}
-		
-	}
 	
 	#region Triggers
 	
 	public void OnTriggerEnter(Collider other)
 	{
-		if(other.tag == "Climbable")
-		{
-			m_state = ActorControllerState.OnClimbable;
-		}
 	}
 	
 	public void OnTriggerStay(Collider other)
 	{
-		if(other.tag == "Climbable")
-		{
-			m_state = ActorControllerState.OnClimbable;
-		}
 	}
 	
 	public void OnTriggerExit(Collider other)
 	{
-		m_state = ActorControllerState.InAir;
 	}
 	
 	#endregion
@@ -273,10 +201,10 @@ public class ActorController : MonoBehaviour
 	
 	public void OnGUI()
 	{
-		string output = "Actor State: \t" + System.Enum.GetName(typeof(ActorControllerState), m_state);
-		output += "\nActorWall State: \t" + System.Enum.GetName(typeof(ActorControllerWallState), m_wallState);
+	//	string output = "Actor State: \t" + System.Enum.GetName(typeof(ActorControllerState), m_state);
+		//output += "\nActorWall State: \t" + System.Enum.GetName(typeof(ActorControllerWallState), m_wallState);
 		
-		GUI.TextArea(new Rect(Screen.width - 200, Screen.height - 100, 180, 80), output);
+		//GUI.TextArea(new Rect(Screen.width - 200, Screen.height - 100, 180, 80), output);
 	}
 	
 	#endregion
