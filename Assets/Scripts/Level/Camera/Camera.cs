@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections;
 
@@ -8,6 +9,22 @@ public class Camera : WorldObject
 	public float rotation = 0.0f;
 	public float rotationSpeed = 0.5f;
 	public float maxRotation_degrees = 90.0f;
+	
+	public event EventHandler StateChanged;
+	
+	public enum TargetState
+	{
+		Spotted,
+		Searching
+	}
+	
+	public TargetState GetState()
+	{
+		return m_state;	
+	}
+	
+	
+	protected TargetState m_state = TargetState.Searching;
 	
 	Camera()
 	{
@@ -50,6 +67,46 @@ public class Camera : WorldObject
 		transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotation);
 	}
 	
+	private void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) 
+	{
+		int state = 0;
+        if (stream.isWriting) 
+		{
+			if(m_stateChanged)
+			{
+				m_stateChanged = false;
+            	state = (int)m_state;
+            	stream.Serialize(ref state);
+			}
+        }
+		else 
+		{
+            stream.Serialize(ref state);
+            TargetState newState = (TargetState)state;
+			if(newState != m_state)
+			{
+				m_state = newState;
+				if(StateChanged != null)
+				{
+					StateChanged(this, null);
+				}
+			}
+        }
+    }
+	
+	public void ChangeState(TargetState state)
+	{
+		if(state != m_state)
+		{
+			m_state = state;
+			m_stateChanged = true;
+			if(StateChanged != null)
+			{
+				StateChanged(this, null);
+			}
+		}
+	}
+	
 	void OnDrawGizmos()
 	{
 		Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation, transform.localScale);
@@ -59,4 +116,6 @@ public class Camera : WorldObject
 		Gizmos.DrawLine(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(-halfWidth, range, 0.0f));
 		Gizmos.DrawLine(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(halfWidth, range, 0.0f));
 	}
+	
+	private bool m_stateChanged = false;
 }

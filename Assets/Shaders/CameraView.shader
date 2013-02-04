@@ -12,10 +12,10 @@ Shader "Custom/CameraView"
 	    Pass 
 	    { 
 	    	
-	    	ZWrite Off
-	    //ColorMask RGBA
+	    	//ZWrite Off
+	    ColorMask RGB
 	    //BlendOp Min
-			Blend OneMinusDstAlpha  DstAlpha
+			Blend SrcAlpha  OneMinusSrcAlpha
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag

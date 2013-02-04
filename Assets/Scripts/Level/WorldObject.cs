@@ -9,10 +9,10 @@ public enum WorldView
 
 public abstract class WorldObject : MonoBehaviour
 {
-	public WorldView ViewType;
 	void Start()
 	{
-		CreateViewObject(ViewType);
+		WorldView view = GameFlow.Instance.View;
+		CreateViewObject(view);
 	}
 	
 	public void OnDestroy()
@@ -24,8 +24,14 @@ public abstract class WorldObject : MonoBehaviour
 	{
 		switch(view)
 		{
-			case WorldView.Agent: 	m_gameObject = UnityEngine.GameObject.Instantiate(m_agentViewPrefab) as GameObject; break;
-			case WorldView.Admin: 	m_gameObject = UnityEngine.GameObject.Instantiate(m_adminViewPrefab) as GameObject; break;
+			case WorldView.Agent: 	if( m_agentViewPrefab != null) m_gameObject = UnityEngine.GameObject.Instantiate(m_agentViewPrefab) as GameObject; break;
+			case WorldView.Admin: 	if( m_adminViewPrefab != null) m_gameObject = UnityEngine.GameObject.Instantiate(m_adminViewPrefab) as GameObject; break;
+		}
+		
+		if(m_gameObject == null)
+		{
+			Debug.LogError("Failed to create " + System.Enum.GetName(typeof(WorldView), GameFlow.Instance.View) + " for type: " + name);
+			return;
 		}
 		
 		m_viewObject = m_gameObject.GetComponent<WorldViewObject>();
