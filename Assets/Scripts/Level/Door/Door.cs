@@ -22,10 +22,7 @@ public class Door : WorldObject
 	void Update()
 	{
 		//TODO: This is all guff for the admin-view
-		if(State == DoorState.Open)
-			(m_viewObject as AgentDoor).OpenDoor();
-		else if(State == DoorState.Closed)
-			(m_viewObject as AgentDoor).CloseDoor();
+		
 	}
 	
     void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info) 
@@ -38,6 +35,11 @@ public class Door : WorldObject
             stream.Serialize(ref state);
             State = (DoorState)state;
         }
+		
+		if(State == DoorState.Open)
+			(m_viewObject as AgentDoor).OpenDoor();
+		else if(State == DoorState.Closed)
+			(m_viewObject as AgentDoor).CloseDoor();
     }
 	
 	void OnDrawGizmos()

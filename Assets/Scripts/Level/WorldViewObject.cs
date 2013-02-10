@@ -9,4 +9,6 @@ public abstract class WorldViewObject : MonoBehaviour
 	{
 		m_worldObject = worldObject;	
 	}
+	
+	public virtual void OnStart() {}
 }

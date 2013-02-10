@@ -13,6 +13,13 @@ public abstract class WorldObject : MonoBehaviour
 	{
 		WorldView view = GameFlow.Instance.View;
 		CreateViewObject(view);
+		
+		if(m_viewObject != null)
+		{
+			m_viewObject.OnStart();
+		}
+		
+		OnStart();
 	}
 	
 	public void OnDestroy()

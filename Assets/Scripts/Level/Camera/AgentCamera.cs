@@ -23,6 +23,7 @@ public class AgentCamera : WorldViewObject
 	private MeshFilter m_filter 	= null;
 	private Camera m_camera 		= null;
 	private List<Collider> m_collidersInView = new List<Collider>();
+	private Mesh m_cameraMesh;
 	
 	public Camera GetCamera()
 	{
@@ -45,13 +46,16 @@ public class AgentCamera : WorldViewObject
 	
 	public void SensorChanged(bool spotted)
 	{
-		if(spotted)
+		if(m_camera != null)
 		{
-			m_camera.ChangeState(Camera.TargetState.Spotted);
-		}
-		else
-		{
-			m_camera.ChangeState(Camera.TargetState.Searching);	
+			if(spotted)
+			{
+				m_camera.ChangeState(Camera.TargetState.Spotted);
+			}
+			else
+			{
+				m_camera.ChangeState(Camera.TargetState.Searching);	
+			}
 		}
 	}
 	
@@ -92,7 +96,7 @@ public class AgentCamera : WorldViewObject
 	/// </summary>
 	private void BuildColliderMesh()
 	{
-		Mesh newMesh = new Mesh();
+		m_cameraMesh = new Mesh();
 		
 		Vector3[] 	vertices 	= new Vector3[5];
 		Vector2[] 	uvs 		= new Vector2[5];
@@ -130,17 +134,17 @@ public class AgentCamera : WorldViewObject
 		triangles[16] = 3;
 		triangles[17] = 4;
 		
-		newMesh.vertices 	= vertices;
-		newMesh.uv 			= uvs;
-		newMesh.triangles 	= triangles;
+		m_cameraMesh.vertices 	= vertices;
+		m_cameraMesh.uv 			= uvs;
+		m_cameraMesh.triangles 	= triangles;
 		
-		m_filter.mesh = newMesh;
+		m_filter.sharedMesh = m_cameraMesh;
 	}
 	
 	private void RebuildMesh()
 	{
-		Mesh newMesh = new Mesh();
-		newMesh.name = "CameraView";
+		//Mesh newMesh = new Mesh();
+	//	newMesh.name = "CameraView";
 		
 		List<OccluderVector> occluders = GetOccluders();
 		
@@ -176,12 +180,13 @@ public class AgentCamera : WorldViewObject
 			triangles[(i - 1) * 3 + 2] = i + 1;
 		}
 		
-		newMesh.vertices 	= vertices;
-		newMesh.uv 			= uvs;
-		newMesh.normals = normals;
-		newMesh.triangles 	= triangles;
+		m_filter.sharedMesh.Clear();
+		m_filter.sharedMesh.vertices 	= vertices;
+		m_filter.sharedMesh.uv 			= uvs;
+		m_filter.sharedMesh.normals = normals;
+		m_filter.sharedMesh.triangles 	= triangles;
 		
-		m_filter.mesh = newMesh;
+		//m_filter.sharedMesh = newMesh;
 	}
 	
 	/// <summary>

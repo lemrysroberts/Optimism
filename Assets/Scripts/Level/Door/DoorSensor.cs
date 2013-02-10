@@ -26,7 +26,7 @@ public class DoorSensor : MonoBehaviour
 		if(other.gameObject.tag == TriggerTag)
 		{
 			m_detectedEntities++;
-			m_door.OpenDoor();
+			m_door.RequestOpen();
 			Debug.Log("Opening door");
 		}
 	}
@@ -41,7 +41,7 @@ public class DoorSensor : MonoBehaviour
 			if(m_detectedEntities == 0)
 			{
 				Debug.Log("Closing door");
-				m_door.CloseDoor();	
+				m_door.RequestClose();	
 			}
 		}
 	}

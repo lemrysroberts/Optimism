@@ -13,9 +13,16 @@ public class MainMenu : MonoBehaviour
 		int top = (Screen.height / 2) - MenuHeight / 2;
 		GUI.Box (new Rect(left, top, MenuWidth, MenuHeight), "Game Mode");
 		
-		if(GUI.Button(new Rect(left + 10, top + 30, MenuWidth - 20, 60), "Start Game")) 
+		if(GUI.Button(new Rect(left + 10, top + 30, MenuWidth - 20, 60), "Agent")) 
 		{
+			GameFlow.Instance.View = WorldView.Agent;
 			Application.LoadLevel("AgentView");
-		}		
+		}	
+		
+		if(GUI.Button(new Rect(left + 10, top + 100, MenuWidth - 20, 60), "Admin")) 
+		{
+			GameFlow.Instance.View = WorldView.Admin;
+			Application.LoadLevel("AgentView");
+		}
 	}
 }

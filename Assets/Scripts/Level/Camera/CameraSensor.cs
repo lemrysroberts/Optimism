@@ -21,6 +21,12 @@ public class CameraSensor : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+		if(m_camera == null)
+		{
+			m_camera = m_agentCamera.GetCamera();	
+			return;
+		}
+		
 		bool spotted = false;
 		foreach(Collider target in m_targets)
 		{

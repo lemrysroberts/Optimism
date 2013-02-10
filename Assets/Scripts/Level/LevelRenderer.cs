@@ -11,6 +11,9 @@ public class LevelRenderer : MonoBehaviour
 	public Material blockedMaterial;
 	public Material openMaterial;
 	
+	public Material blockedMaterialAlt;
+	public Material openMaterialAlt;
+	
 	// Use this for initialization
 	void Start () 
 	{
@@ -102,12 +105,12 @@ public class LevelRenderer : MonoBehaviour
 					{
 						if(blocked)
 						{
-							renderer.sharedMaterial = blockedMaterial;
+							renderer.sharedMaterial = GameFlow.Instance.View == WorldView.Agent ?  blockedMaterial : blockedMaterialAlt;
 							
 						}
 						else
 						{
-							renderer.sharedMaterial = openMaterial;
+							renderer.sharedMaterial = GameFlow.Instance.View == WorldView.Agent ?  openMaterial : openMaterialAlt;
 						}
 					}
 					m_layoutObjects[x,y] = newTile;
@@ -126,11 +129,11 @@ public class LevelRenderer : MonoBehaviour
 			MeshRenderer renderer = m_layoutObjects[x,y].GetComponent<MeshRenderer>();
 			if(blocked)
 			{
-				renderer.material = blockedMaterial;
+				renderer.sharedMaterial = GameFlow.Instance.View == WorldView.Agent ?  blockedMaterial : blockedMaterialAlt;
 			}
 			else
 			{
-				renderer.material = openMaterial;
+				renderer.sharedMaterial = GameFlow.Instance.View == WorldView.Agent ?  openMaterial : openMaterialAlt;
 			}
 		}
 	}
