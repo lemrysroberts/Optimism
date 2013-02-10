@@ -6,7 +6,6 @@ public class CameraSensor : MonoBehaviour
 {
 	public LayerMask collisionLayer = 0;
 	
-	bool hasTarget = false;
 	Camera m_camera = null;
 	AgentCamera m_agentCamera = null;
 	private List<Collider> m_targets = new List<Collider>();
@@ -37,9 +36,7 @@ public class CameraSensor : MonoBehaviour
 			
 			float cameraMin = m_camera.rotation - m_camera.fov_degrees / 2.0f;
 			float cameraMax = m_camera.rotation + m_camera.fov_degrees / 2.0f;
-			float cameraCenter = m_camera.rotation ;
 			
-		//	bool spotted = false;
 			if(minAngle > cameraMin && minAngle < cameraMax)
 			{
 				Vector3 direction = target.bounds.min - transform.position;
@@ -57,19 +54,12 @@ public class CameraSensor : MonoBehaviour
 				Vector3 direction = target.bounds.center- transform.position;
 				spotted |= !Physics.Raycast(transform.position, direction, direction.magnitude, collisionLayer);
 			}
-			hasTarget =spotted;
-			
-			
 			
 			Debug.DrawLine(transform.position, target.bounds.min, Color.cyan);
 			Debug.DrawLine(transform.position, target.bounds.max, Color.cyan);
 			Debug.DrawLine(transform.position, target.bounds.center, Color.cyan);
-			//target.bounds.min
-			
-			
 		}
 		m_agentCamera.SensorChanged(spotted);
-		
 	}
 	
 	void OnTriggerEnter(Collider other)

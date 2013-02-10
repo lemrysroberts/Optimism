@@ -14,16 +14,8 @@ public class LevelRenderer : MonoBehaviour
 	public Material blockedMaterialAlt;
 	public Material openMaterialAlt;
 	
-	// Use this for initialization
-	void Start () 
-	{
-		
-		
-	}
-	
 	void OnEnable()
 	{
-		Debug.Log("Enabled...");	 
 		m_level = GetComponent<Level>();
 		m_level.LevelChanged += new Level.LevelChangedEventHandler(OnLevelChanged);
 	}
@@ -68,7 +60,6 @@ public class LevelRenderer : MonoBehaviour
 						DestroyImmediate(gameObject);	
 					}
 				}
-				
 				BuildMesh();
 			}
 			
@@ -85,38 +76,24 @@ public class LevelRenderer : MonoBehaviour
 			{
 				for(int y = 0; y < m_data.GetLength(1); y++)
 				{
-					if(m_layoutObjects[x,y] != null)
-						continue;
+					if(m_layoutObjects[x,y] == null)
+					{
+						GameObject newTile = Instantiate(m_prefabTile) as GameObject;
+						Tile tileComponent = newTile.GetComponent<Tile>();
+						
+						newTile.transform.parent = gameObject.transform;
+						tileComponent.X = x;
+						tileComponent.Y = y;
+						m_layoutObjects[x,y] = newTile;
+					}
 				
 					bool blocked = m_level.GetBlocked(x, y);
 					
-					GameObject newTile = Instantiate(m_prefabTile) as GameObject;
-					Tile tileComponent = newTile.GetComponent<Tile>();
 					
-					newTile.transform.parent = gameObject.transform;
-					tileComponent.X = x;
-					tileComponent.Y = y;
-				
-					newTile.transform.position = new Vector3(x, y, blocked ? 0.0f : 10.0f);
-					
-					// This should be set via a more meaningful script in the tileType itself
-					MeshRenderer renderer = newTile.GetComponent<MeshRenderer>();
-					if(renderer != null)
-					{
-						if(blocked)
-						{
-							renderer.sharedMaterial = GameFlow.Instance.View == WorldView.Agent ?  blockedMaterial : blockedMaterialAlt;
-							
-						}
-						else
-						{
-							renderer.sharedMaterial = GameFlow.Instance.View == WorldView.Agent ?  openMaterial : openMaterialAlt;
-						}
-					}
-					m_layoutObjects[x,y] = newTile;
+					SetBlocked(x, y, blocked);
 				}
 			}
-			}
+		}
 	}
 	
 	public void SetBlocked(int x, int y, bool blocked)
@@ -144,11 +121,6 @@ public class LevelRenderer : MonoBehaviour
 		
 		SetBlocked(x, y, blocked);
 		
-	}
-	
-	void OnDestroy()
-	{
-				
 	}
 	
 	private bool[,] m_data;

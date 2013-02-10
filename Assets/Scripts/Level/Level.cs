@@ -1,12 +1,15 @@
 /// <summary>
 /// High-level view of the level layout data.
+/// 
+/// Serialisation functions are contained within LevelSerialiser.cs
 /// </summary>
 
 using UnityEngine;
 using System.Collections;
 
+
 [ExecuteInEditMode]
-public class Level : MonoBehaviour 
+public partial class Level : MonoBehaviour 
 {
 	public int Width = 5;
 	public int Height = 5;
@@ -14,10 +17,17 @@ public class Level : MonoBehaviour
 	public delegate void LevelChangedEventHandler(int x, int y);
 	public event LevelChangedEventHandler LevelChanged;
 	
+	public string LoadedLevel
+	{
+		get { return m_loadedLevel; }	
+	}
+	
+	[SerializeField]
+	private string m_loadedLevel;
+	
 	// Use this for initialization
 	void Start () 
 	{
-		
 		m_dirty = true;
 	}
 	
@@ -77,7 +87,7 @@ public class Level : MonoBehaviour
 		{
 		//	Debug.Log("Set blocked");
 			m_layout[x,y] = blocked;
-			m_dirty = true;
+			//m_dirty = true;
 			
 			if(LevelChanged != null)
 				LevelChanged(x, y);
@@ -85,6 +95,7 @@ public class Level : MonoBehaviour
 	}
 #endif
 	
+
 	
 	public bool GetBlocked(int x, int y)
 	{

@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-
 /// <summary>
 /// DON'T LOOK AT ME, I'M HIDEOUS.
 /// 
@@ -143,9 +142,6 @@ public class AgentCamera : WorldViewObject
 	
 	private void RebuildMesh()
 	{
-		//Mesh newMesh = new Mesh();
-	//	newMesh.name = "CameraView";
-		
 		List<OccluderVector> occluders = GetOccluders();
 		
 		int triangleCount = ((occluders.Count) - 1) * 3;
@@ -185,8 +181,6 @@ public class AgentCamera : WorldViewObject
 		m_filter.sharedMesh.uv 			= uvs;
 		m_filter.sharedMesh.normals = normals;
 		m_filter.sharedMesh.triangles 	= triangles;
-		
-		//m_filter.sharedMesh = newMesh;
 	}
 	
 	/// <summary>

@@ -4,7 +4,6 @@ using UnityEngine;
 [CustomEditor(typeof(Level))]
 public class LevelEditor : Editor 
 {
-	
 	private bool m_blocked 	= false;
 	private bool m_edit 	= false;
 	
@@ -24,6 +23,8 @@ public class LevelEditor : Editor
 		myTarget.Width = EditorGUILayout.IntSlider ("Width", myTarget.Width, 0, 100);
 		myTarget.Height = EditorGUILayout.IntSlider ("Height", myTarget.Height, 0, 100);
 		
+		
+		
 		if(myTarget.Width != oldWidth || myTarget.Height != oldHeight || frameDelay)
 		{
 			myTarget.SetDirty(true);
@@ -41,6 +42,50 @@ public class LevelEditor : Editor
 		
 		m_blocked = GUILayout.Toggle(m_blocked, "Blocked");
 		m_edit = GUILayout.Toggle(m_edit, "Edit Mode");
+		
+		GUILayout.Label("Loaded Level: " + myTarget.LoadedLevel);
+		
+		if(GUILayout.Button("Save..."))
+		{
+			var path = EditorUtility.SaveFilePanelInProject("Save Level...", "new_level", "xml", "bleurgh");
+			
+			myTarget.Serialise(path);
+		}
+		
+		if(GUILayout.Button("Load..."))
+		{
+			var path = EditorUtility.OpenFilePanel("Load Level...", "levels", "xml");
+			
+			// Strip the data-path
+			if(path != null)
+			{
+				int dataIndex = path.IndexOf(Application.dataPath);
+				
+				if(dataIndex != -1)
+				{
+					path = path.Remove(dataIndex, Application.dataPath.Length);
+					
+					if(path[0] == '\\' || path[0] == '/')
+					{
+						path = path.Remove(0, 1);	
+					}
+					
+					myTarget.Deserialise(path);
+				
+					LevelRenderer renderer = myTarget.GetComponent<LevelRenderer>() as LevelRenderer;
+					if(renderer != null)
+					{
+						EditorUtility.SetDirty (renderer);
+					}
+					EditorUtility.SetDirty (target);
+				}
+				else
+				{
+					Debug.LogError("Path \"" + path + "\" is not within the assets directory");
+				}
+			}
+		}
+		
     }
 	
 	Vector3 hitLocation = new Vector3(0.0f, 0.0f, 0.0f);
@@ -82,18 +127,11 @@ public class LevelEditor : Editor
 			myTarget.SetTargetBlocked((int)(hitLocation.x + 0.5f), (int)(hitLocation.y + 0.5f), m_blocked);
 			EditorUtility.SetDirty (target);
 			
-			
 		}
 		
 		Handles.DrawLine(new Vector3(hitLocation.x, hitLocation.y, -10), new Vector3(hitLocation.x, hitLocation.y, -0.5f));
 		Handles.DrawWireDisc(new Vector3(hitLocation.x, hitLocation.y, 0.0f), new Vector3(0.0f, 0.0f, -10), 0.2f);
-		
-		
-			
-		if (GUI.changed)
-		{
-       		
-    	}
+
 	}
 	
 }

@@ -104,24 +104,15 @@ public class ActorController : MonoBehaviour
 			yDirectionVec.y = -yDirectionVec.y;
 		}
 	
-		bool xCollided = false;
-		bool yCollided = false;
-		
-		// This is a bit of a hack to mitigate a bug I've yet to sort.
-		// Basically, if you've accelerated a quarter of the way through a block before correcting the position, the orthogonal ray-cast can mis-fire.
-		// This weights the checks to try and ensure that the most significant delta is checked first, but it's not really a solution.
-		//
-		// Bugs caused this attempts to fix: Getting stuck on the ceiling during a jump.
-		// TODO: Find a solution!
 		if(Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
 		{
-			xCollided = CollideX( ref newPosition, xDirectionVec );
-			yCollided = CollideY( ref newPosition, yDirectionVec );
+			CollideX( ref newPosition, xDirectionVec );
+			CollideY( ref newPosition, yDirectionVec );
 		}
 		else
 		{
-			yCollided = CollideY (ref newPosition, yDirectionVec);
-			xCollided = CollideX (ref newPosition, xDirectionVec);
+			CollideY (ref newPosition, yDirectionVec);
+			CollideX (ref newPosition, xDirectionVec);
 		}
 		
 		

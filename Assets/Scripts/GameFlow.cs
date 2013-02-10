@@ -8,7 +8,12 @@ using System.Collections.Generic;
 public class GameFlow
 {
 	public WorldView View = WorldView.Agent;
+	public GameObject LevelObject = null;
 	
+	public string CurrentLevel
+	{
+		get; set;	
+	}
 	
 	private static GameFlow m_instance = null;	
 	
@@ -48,6 +53,16 @@ public class GameFlow
 			BeginAdmin();	
 		}
 	
+		// Regardless of view, if you find a level object, deserialise it into the current request
+		if(LevelObject != null && CurrentLevel != null)
+		{
+			var level = LevelObject.GetComponent<Level>();
+			
+			if(level != null)
+			{
+				level.Deserialise(CurrentLevel);
+			}
+		}
 		
 	}
 	

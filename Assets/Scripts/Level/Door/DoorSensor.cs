@@ -22,7 +22,6 @@ public class DoorSensor : MonoBehaviour
 	
 	void OnTriggerEnter(Collider other)
 	{
-		Debug.Log(other.tag);
 		if(other.gameObject.tag == TriggerTag)
 		{
 			m_detectedEntities++;
@@ -37,7 +36,6 @@ public class DoorSensor : MonoBehaviour
 		{
 			m_detectedEntities--;	
 			
-			Debug.Log("Entity count: " + m_detectedEntities);
 			if(m_detectedEntities == 0)
 			{
 				Debug.Log("Closing door");

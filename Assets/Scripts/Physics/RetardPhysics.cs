@@ -13,8 +13,6 @@ public class RetardPhysics : MonoBehaviour
 	public float SlipDiff 			= 3.0f;
 	public float MaxSpeed 			= 0.5f;
 	
-	private int m_groundTriggersHit = 0;
-	
 	public int Test { get; set;}
 	
 	private enum PhysicsState
