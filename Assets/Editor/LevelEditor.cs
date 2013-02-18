@@ -1,11 +1,14 @@
 using UnityEditor;
 using UnityEngine;
+using System.IO;
 
 [CustomEditor(typeof(Level))]
 public class LevelEditor : Editor 
 {
 	private bool m_blocked 	= false;
 	private bool m_edit 	= false;
+	
+	public string loadedFile = string.Empty;
 	
 	public void OnEnable()
 	{
@@ -16,7 +19,7 @@ public class LevelEditor : Editor
 	public override void OnInspectorGUI() 
 	{
 		Level myTarget = (Level) target;
-		
+
 		int oldWidth = myTarget.Width;
 		int oldHeight = myTarget.Height;
 		
@@ -24,10 +27,10 @@ public class LevelEditor : Editor
 		myTarget.Height = EditorGUILayout.IntSlider ("Height", myTarget.Height, 0, 100);
 		
 		
-		
 		if(myTarget.Width != oldWidth || myTarget.Height != oldHeight || frameDelay)
 		{
 			myTarget.SetDirty(true);
+			AutoSave();
 			EditorUtility.SetDirty (target);
 			
 			// The renderer will also need to know about the change
@@ -42,7 +45,7 @@ public class LevelEditor : Editor
 		
 		m_blocked = GUILayout.Toggle(m_blocked, "Blocked");
 		m_edit = GUILayout.Toggle(m_edit, "Edit Mode");
-		
+		/*
 		GUILayout.Label("Loaded Level: " + myTarget.LoadedLevel);
 		
 		if(GUILayout.Button("Save..."))
@@ -50,6 +53,7 @@ public class LevelEditor : Editor
 			var path = EditorUtility.SaveFilePanelInProject("Save Level...", "new_level", "xml", "bleurgh");
 			
 			myTarget.Serialise(path);
+			AutoSave();
 		}
 		
 		if(GUILayout.Button("Load..."))
@@ -85,7 +89,7 @@ public class LevelEditor : Editor
 				}
 			}
 		}
-		
+		*/
     }
 	
 	Vector3 hitLocation = new Vector3(0.0f, 0.0f, 0.0f);
@@ -111,6 +115,11 @@ public class LevelEditor : Editor
 				{
 					hitLocation = ray.GetPoint(hit);
 					
+					EditorUtility.SetDirty (target);
+					myTarget.SetTargetBlocked((int)(hitLocation.x + 0.5f), (int)(hitLocation.y + 0.5f), m_blocked);
+					EditorUtility.SetDirty (target);
+					AutoSave();
+					
 				}
 			
 		    	e.Use();  //Eat the event so it doesn't propagate through the editor.
@@ -122,16 +131,22 @@ public class LevelEditor : Editor
 		       //somehow this allows e.Use() to actually function and block mouse input
 		       HandleUtility.AddDefaultControl( GUIUtility.GetControlID( GetHashCode(), FocusType.Passive ) );
 		    }
-			
-			EditorUtility.SetDirty (target);
-			myTarget.SetTargetBlocked((int)(hitLocation.x + 0.5f), (int)(hitLocation.y + 0.5f), m_blocked);
-			EditorUtility.SetDirty (target);
-			
 		}
 		
 		Handles.DrawLine(new Vector3(hitLocation.x, hitLocation.y, -10), new Vector3(hitLocation.x, hitLocation.y, -0.5f));
 		Handles.DrawWireDisc(new Vector3(hitLocation.x, hitLocation.y, 0.0f), new Vector3(0.0f, 0.0f, -10), 0.2f);
 
+	}
+	
+	private void AutoSave()
+	{
+		return;
+		
+	}
+	
+	private void OnDestroy()
+	{
+		Debug.Log("DESTROYING");	
 	}
 	
 }

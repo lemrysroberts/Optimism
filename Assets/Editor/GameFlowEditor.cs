@@ -5,7 +5,14 @@ using System.Collections.Generic;
 
 public class GameFlowEditor : EditorWindow 
 {
-	[MenuItem("Optimism/Startup")]
+	[MenuItem("Optimism/Startup", true)]
+	public static bool ShowWindowValidate()
+	{
+		GameFlowWrapper wrapperObject = GameObject.FindObjectOfType(typeof(GameFlowWrapper)) as GameFlowWrapper;
+		return wrapperObject != null;
+	}
+	
+	[MenuItem("Optimism/Startup", false)]
 	public static void ShowWindow()
 	{
 		//Show existing window instance. If one doesn't exist, make one.
@@ -14,15 +21,15 @@ public class GameFlowEditor : EditorWindow
 
 	void OnGUI()
 	{
-		GameFlow flow = GameFlow.Instance;
+		GameFlowWrapper wrapperObject = GameObject.FindObjectOfType(typeof(GameFlowWrapper)) as GameFlowWrapper;
 		
 		GUILayout.Label ("Agent Instantiation Objects", EditorStyles.boldLabel);
 		
 		EditorGUILayout.BeginVertical();
 		
 		List<GameObject> newItems = new List<GameObject>();
-		
-		foreach(GameObject item in flow.AgentStartupItems)
+		 
+		foreach(GameObject item in wrapperObject.AgentStartupItems)
 		{
 			EditorGUILayout.BeginHorizontal();
 			GameObject newObject = EditorGUILayout.ObjectField(item, typeof(GameObject), false) as GameObject;
@@ -43,7 +50,7 @@ public class GameFlowEditor : EditorWindow
 			newItems.Add(blankObject);	
 		}
 		
-		flow.AgentStartupItems = newItems;
+		wrapperObject.AgentStartupItems = newItems;
 		
 		// Admin
 		
@@ -52,7 +59,7 @@ public class GameFlowEditor : EditorWindow
 		
 		newItems = new List<GameObject>();
 		
-		foreach(GameObject item in flow.AdminStartupItems)
+		foreach(GameObject item in wrapperObject.AdminStartupItems)
 		{
 			EditorGUILayout.BeginHorizontal();
 			GameObject newObject = EditorGUILayout.ObjectField(item, typeof(GameObject), false) as GameObject;
@@ -73,7 +80,7 @@ public class GameFlowEditor : EditorWindow
 			newItems.Add(blankObject);	
 		}
 		
-		flow.AdminStartupItems = newItems;
+		wrapperObject.AdminStartupItems = newItems;
 		
 		EditorGUILayout.EndVertical();
 		

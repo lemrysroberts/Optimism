@@ -38,4 +38,9 @@ public class AdminCamera : WorldViewObject
 			m_renderer.enabled = true;	
 		}
 	}
+	
+	void OnGUI()
+	{
+		
+	}
 }

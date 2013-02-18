@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Xml;
 using System.IO;
 using System.Text;
-
+/*
 public partial class Level : MonoBehaviour 
 {
 	public void Serialise(string path)
@@ -106,6 +106,7 @@ public partial class Level : MonoBehaviour
 			}
 			
 			m_loadedLevel = path;
+			Loaded = true;
 			
 			// Flag the level as dirty so dependent systems know to refresh
 			m_dirty = true;
@@ -117,5 +118,5 @@ public partial class Level : MonoBehaviour
 		
 	}
 }
-
+ */
 			

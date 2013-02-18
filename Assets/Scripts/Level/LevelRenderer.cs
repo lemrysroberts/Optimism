@@ -29,8 +29,12 @@ public class LevelRenderer : MonoBehaviour
 			
 			if(m_data != null)
 			{
-				m_layoutObjects = new GameObject[m_data.GetLength(0), m_data.GetLength(1)];
-				
+				m_layoutObjects = new List<GameObject>(m_data.m_width * m_data.m_height);
+				for(int i = 0; i < m_data.m_width * m_data.m_height; ++i)
+				{
+					m_layoutObjects.Add(null);	
+				}
+								
 				List<GameObject> toDelete = new List<GameObject>();
 				
 				if(transform.childCount > 0)
@@ -43,9 +47,13 @@ public class LevelRenderer : MonoBehaviour
 						
 						if(tile != null)
 						{
-							if(tile.X < m_data.GetLength(0) && tile.Y < m_data.GetLength(1))
+							if(tile.X < m_data.m_width && tile.Y < m_data.m_height)
 							{
-								m_layoutObjects[tile.X, tile.Y] = child;
+								int index = tile.Y * (m_data.m_width - 1) + tile.X;
+								if(index < m_layoutObjects.Count)
+									m_layoutObjects[index] = child;
+								else
+									toDelete.Add(child);
 							}
 							else
 							{
@@ -61,9 +69,10 @@ public class LevelRenderer : MonoBehaviour
 					}
 				}
 				BuildMesh();
+				m_level.SetDirty(false);
 			}
 			
-			m_level.SetDirty(false);
+			
 		}
 		
 	}
@@ -72,19 +81,22 @@ public class LevelRenderer : MonoBehaviour
 	{
 		if(m_data != null)
 		{
-			for(int x = 0; x < m_data.GetLength(0); x++)
+			for(int y = 0; y < m_data.m_height; y++)
 			{
-				for(int y = 0; y < m_data.GetLength(1); y++)
+				for(int x = 0; x < m_data.m_width; x++)
 				{
-					if(m_layoutObjects[x,y] == null)
+				
+					int index = y * (m_data.m_width - 1) + x;
+					if(index >= m_layoutObjects.Count ||  m_layoutObjects[index] == null)
 					{
+						Debug.Log("Creating new tile...");
 						GameObject newTile = Instantiate(m_prefabTile) as GameObject;
 						Tile tileComponent = newTile.GetComponent<Tile>();
 						
 						newTile.transform.parent = gameObject.transform;
 						tileComponent.X = x;
 						tileComponent.Y = y;
-						m_layoutObjects[x,y] = newTile;
+						m_layoutObjects.Insert(index, newTile);
 					}
 				
 					bool blocked = m_level.GetBlocked(x, y);
@@ -98,12 +110,12 @@ public class LevelRenderer : MonoBehaviour
 	
 	public void SetBlocked(int x, int y, bool blocked)
 	{
-		if(x < m_layoutObjects.GetLength(0) && y < m_layoutObjects.GetLength(1))
+		if(x < m_data.m_width && y < m_data.m_height && x >= 0 && y >= 0)
 		{
 			
-			m_layoutObjects[x,y].transform.position = new Vector3(x, y, blocked ? 0.0f : 10.0f);
+			m_layoutObjects[y * (m_data.m_width - 1) + x].transform.position = new Vector3(x, y, blocked ? 0.0f : 10.0f);
 			
-			MeshRenderer renderer = m_layoutObjects[x,y].GetComponent<MeshRenderer>();
+			MeshRenderer renderer = m_layoutObjects[y * (m_data.m_width - 1) + x].GetComponent<MeshRenderer>();
 			if(blocked)
 			{
 				renderer.sharedMaterial = GameFlow.Instance.View == WorldView.Agent ?  blockedMaterial : blockedMaterialAlt;
@@ -112,17 +124,21 @@ public class LevelRenderer : MonoBehaviour
 			{
 				renderer.sharedMaterial = GameFlow.Instance.View == WorldView.Agent ?  openMaterial : openMaterialAlt;
 			}
-		}
+		} 
 	}
 	
 	public void OnLevelChanged(int x, int y)
 	{
-		bool blocked = m_level.GetData()[x, y];
+		bool blocked = m_level.GetData().IsBlocked(x, y);
 		
 		SetBlocked(x, y, blocked);
 		
 	}
 	
-	private bool[,] m_data;
-	private GameObject[,] m_layoutObjects;
+	[SerializeField]
+	private Level.Layout m_data;
+	
+	[SerializeField]
+	private List<GameObject> m_layoutObjects = null;
+	
 }

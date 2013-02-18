@@ -17,17 +17,7 @@ public class GameFlow
 	
 	private static GameFlow m_instance = null;	
 	
-	public List<GameObject> AgentStartupItems
-	{
-		get { return m_agentStartupObjects; }
-		set { m_agentStartupObjects = value; }
-	}
-	
-	public List<GameObject> AdminStartupItems
-	{
-		get { return m_adminStartupObjects; }
-		set { m_adminStartupObjects = value; }
-	}
+
 	
 	public static GameFlow Instance
 	{
@@ -53,16 +43,6 @@ public class GameFlow
 			BeginAdmin();	
 		}
 	
-		// Regardless of view, if you find a level object, deserialise it into the current request
-		if(LevelObject != null && CurrentLevel != null)
-		{
-			var level = LevelObject.GetComponent<Level>();
-			
-			if(level != null)
-			{
-				level.Deserialise(CurrentLevel);
-			}
-		}
 		
 	}
 	
@@ -83,10 +63,25 @@ public class GameFlow
 	
 	private void BeginAdmin()
 	{
-		
+		foreach(GameObject startObject in m_adminStartupObjects)
+		{
+			GameObject.Instantiate(startObject);	
+		}
 	}
 	
 	private bool m_spawnRequired = false;
+	
+	public List<GameObject> AgentStartupItems
+	{
+		get { return m_agentStartupObjects; }
+		set { m_agentStartupObjects = value; }
+	}
+	
+	public List<GameObject> AdminStartupItems
+	{
+		get { return m_adminStartupObjects; }
+		set { m_adminStartupObjects = value; }
+	}
 	
 	private List<GameObject> m_agentStartupObjects = new List<GameObject>();
 	private List<GameObject> m_adminStartupObjects = new List<GameObject>();
