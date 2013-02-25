@@ -5,32 +5,47 @@ using System.Collections;
 [RequireComponent (typeof (MeshFilter))]
 public class GeometryFactory : MonoBehaviour 
 {
-	
 	public enum GeometryType
 	{
 		Plane,	
 		Triangle
 	}
 	
-	public GeometryType geometry_type = GeometryType.Plane;
-		
+	public GeometryType geometryType = GeometryType.Plane;
+	public bool ScaleUVs = false;
+	public float UVScale = 1.0f;
+	
+	[SerializeField]
+	private bool m_meshBuilt = false;
 	
 	// Use this for initialization
 	void Start () 
 	{
-		MeshFilter meshFilterComponent = GetComponent<MeshFilter>();
-		
-		Mesh newMesh = null;
-		
-		switch(geometry_type)
+		if(!m_meshBuilt)
 		{
-			case GeometryType.Plane: newMesh = CreatePlane(); break;
+			RebuildMesh();	
 		}
-		
-		meshFilterComponent.mesh = newMesh;
 	}
 	
-	public static Mesh CreatePlane()
+	public void RebuildMesh()
+	{
+		MeshFilter mesh = GetComponent<MeshFilter>();
+			
+		if(mesh != null)
+		{
+			if(ScaleUVs)
+			{
+				mesh.sharedMesh = CreatePlane(transform.localScale.x * UVScale, transform.localScale.y * UVScale);		
+			}
+			else
+			{
+				mesh.sharedMesh = CreatePlane(1.0f, 1.0f);		
+			}
+		}
+		m_meshBuilt = true;
+	}
+	
+	public static Mesh CreatePlane(float UVXScale, float UVYScale)
 	{
 		Mesh newMesh = new Mesh();
 		
@@ -46,9 +61,9 @@ public class GeometryFactory : MonoBehaviour
 		vertices[3] = new Vector3(0.5f, 0.5f, 0.0f);
 		
 		uvs[0] = new Vector2(0.0f, 0.0f);
-		uvs[1] = new Vector2(1.0f, 0.0f);
-		uvs[2] = new Vector2(0.0f, 1.0f);
-		uvs[3] = new Vector2(1.0f, 1.0f);
+		uvs[1] = new Vector2(UVXScale, 0.0f);
+		uvs[2] = new Vector2(0.0f, UVYScale);
+		uvs[3] = new Vector2(UVXScale, UVYScale);
 		
 		triangles[0] = 0;
 		triangles[1] = 2;
@@ -63,4 +78,6 @@ public class GeometryFactory : MonoBehaviour
 		
 		return newMesh;
 	}
+	
+	
 }
